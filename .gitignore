@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local, site-specific config (use config.example.toml as the template)
+my.toml
+config.toml
+*.local.toml
+
+# Credentials / environment files
+.env
+*.env
+env
+
+# The tool's own working data and imported histories (may contain device configs)
+*.git/
+sros-history/
+*.lock
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store

@@ -1,0 +1,51 @@
+# sros-git-sync configuration
+#
+# Credentials are NEVER stored here: export them in the environment of the job
+# (systemd EnvironmentFile, CI secret, ...):
+#   SROS_USERNAME / SROS_PASSWORD   (names can be changed per node with username_env/password_env)
+
+# Bare git repository that receives one branch per node (created on first run).
+repo = "/var/lib/sros-git-sync/config-history.git"
+
+# Optional: used with --push
+# push_remote = "origin"
+
+# Drop the system-managed 'persistent-indices' block from the stored config (recommended).
+strip_persistent_indices = true
+
+[redact]
+# SR OS: regexes applied to every config line before it is stored in git. If the pattern has a
+# capture group only that group is replaced, otherwise the whole match.
+# SR OS configs contain password hashes and SNMP community strings - decide what may leave the box.
+patterns = [
+    'password\s+"([^"]*)"',
+    'community\s+"([^"]*)"',
+    '(?:authentication|encryption)-key\s+"([^"]*)"',
+]
+
+# SR Linux: regexes on the JSON text, same group rule.
+srlinux_patterns = [
+    '"password":\s*"([^"]*)"',
+    '"community":\s*"([^"]*)"',
+]
+
+[defaults]
+port = 57400
+timeout = "30s"
+# Transport security for gRPC (gNOI File). Prefer a TLS server profile on the node:
+#   tls_ca = "/etc/sros-git-sync/ca.pem"
+# skip_verify = true     # TLS without certificate verification
+# insecure = true        # plain text gRPC - lab only!
+
+[[node]]
+name = "ixrs3x"          # also the branch name and must be [A-Za-z0-9._-]
+address = "ixrs3x"
+insecure = true          # lab simulator without a TLS server profile
+
+# [[node]]
+# name = "leaf2"
+# platform = "srlinux"          # needs /system configuration auto-checkpoint true on the node
+# address = "leaf2"
+# skip_verify = true
+# username_env = "SRL_USERNAME"
+# password_env = "SRL_PASSWORD"

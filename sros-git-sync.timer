@@ -1,0 +1,11 @@
+[Unit]
+Description=Nightly SR OS config history sync
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+# Runs once at next boot if the machine was off at 02:00 - no night is skipped.
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

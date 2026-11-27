@@ -1,0 +1,14 @@
+[Unit]
+Description=Mirror SR OS commit history into git
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+# /etc/sros-git-sync/env must be mode 0600 and contain:
+#   SROS_USERNAME=...
+#   SROS_PASSWORD=...
+EnvironmentFile=/etc/sros-git-sync/env
+ExecStart=/usr/bin/python3 /opt/sros-git-sync/sros_git_sync.py --config /etc/sros-git-sync/config.toml --push
+User=sros-git-sync
+# Exit codes: 0 ok, 1 at least one node failed, 2 bad config, 3 another run in progress
